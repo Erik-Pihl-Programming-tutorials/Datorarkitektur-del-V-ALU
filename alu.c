@@ -106,7 +106,7 @@ uint8_t alu(const uint8_t operation,
 
    if (read(result, 8))              set(*sr, C); 
    if (read(result, 7))              set(*sr, N);
-   if (result == 0)                  set(*sr, Z);
+   if ((uint8_t)(result) == 0)       set(*sr, Z);
    if (read(*sr, N) != read(*sr, V)) set(*sr, S);
    return (uint8_t)result;
 }
