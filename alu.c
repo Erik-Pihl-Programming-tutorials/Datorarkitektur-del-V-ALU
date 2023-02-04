@@ -1,5 +1,5 @@
 /********************************************************************************
-* alu.c: Contains function definitions for implementation of an ALU
+* alu.c: Contains function definition for implementation of an 8 bit ALU
 *        (Aritmetic Logic Unit) for performing calculations and updating
 *        status bits SNZVC as described below:
 *
@@ -60,7 +60,7 @@ uint8_t alu(const uint8_t operation,
             const uint8_t b,
             uint8_t* sr)
 {
-   uint16_t result = 0x00;
+   uint16_t result = 0x00; 
    *sr &= ~((1 << S) | (1 << N) | (1 << Z) | (1 << V) | (1 << C));
 
    switch (operation)
@@ -93,21 +93,20 @@ uint8_t alu(const uint8_t operation,
       }
       case SUB:
       {
-         if (a >= b) result = a - b;
-         else result = a - b + 256;
+         result = a + (256 - b);
 
-         if ((read(a, 7) != read(b, 7)) && (read(result, 7) == read(b, 7)))
+         if ((read(a, 7) == read((256 - b), 7)) && (read(result, 7) != read(a, 7)))
          {
             set(*sr, V);
          }
 
-         break;
+         break;      
       }
    }
 
-   if (read(result, 8)) set(*sr, C);
-   if (read(result, 7)) set(*sr, N);
-   if (result == 0)     set(*sr, Z);
-   if ((bool)read(*sr, N) != (bool)read(*sr, V)) set(*sr, S);
+   if (read(result, 8))              set(*sr, C); 
+   if (read(result, 7))              set(*sr, N);
+   if (result == 0)                  set(*sr, Z);
+   if (read(*sr, N) != read(*sr, V)) set(*sr, S);
    return (uint8_t)result;
 }
